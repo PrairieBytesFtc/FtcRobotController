@@ -22,9 +22,12 @@ public class radarTeleop extends LinearOpMode {
     private CRServo ramp12 = null;
     double IntakePower = 0;
     private String strintakestatus = "Off";
+    double curTargetVelocity = 0;
+    final double lowVelocity = 1650;
+    final double highVelocity = 2300;
 
     @Override
-    public void runOpMode() {
+        public void runOpMode() {
 
         // Drive motor hardware map
         frontRight = hardwareMap.get(DcMotor.class, "rightfront");
@@ -110,6 +113,16 @@ public class radarTeleop extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
+            if (gamepad2.aWasPressed()){
+                curTargetVelocity = lowVelocity;
+            }
+            if (gamepad2.bWasPressed()){
+                curTargetVelocity = 0;
+            }
+            if (gamepad2.xWasPressed()){
+                curTargetVelocity = highVelocity;
+            }
+
             if (gamepad2.dpadRightWasPressed()) {
                 flywheel.setVelocity(1500);
             }
@@ -139,9 +152,11 @@ public class radarTeleop extends LinearOpMode {
             ramp11.setPower(IntakePower);
             ramp12.setPower(-IntakePower);
 
+            flywheel.setVelocity(curTargetVelocity);
 
             telemetry.addData("Intake Status", strintakestatus);
             telemetry.addLine("Running");
+            telemetry.addData("Flywheel Target Velocity", curTargetVelocity);
             telemetry.update();
         }
     }
