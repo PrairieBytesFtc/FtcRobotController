@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.*;
@@ -23,8 +24,24 @@ public class radarTeleop extends LinearOpMode {
     double IntakePower = 0;
     private String strintakestatus = "Off";
     double curTargetVelocity = 0;
-    final double lowVelocity = 1650;
-    final double highVelocity = 2300;
+   // final double lowVelocity = 1650;
+   //final double highVelocity = 2300;
+    final double lowVelocity = 600;
+    final double highVelocity = 1200;
+
+    boolean flicking = false;
+    double launcherPos = 0.75;
+
+    //private ElapsedTime wait = new ElapsedTime();
+    private final ElapsedTime flickTimer = new ElapsedTime();
+    // Flicks launcher servo up and down
+    private void flickLauncher() { // Be sure to reset the launchTime variable when this is run
+        if (flickTimer.milliseconds() > 300){
+            launcherPos = 0.75;
+            flicking = false;
+        } else launcherPos = 0.55;
+    }
+
 
     @Override
         public void runOpMode() {
@@ -59,6 +76,7 @@ public class radarTeleop extends LinearOpMode {
         //servo
         launchServo = hardwareMap.get(Servo.class, "swoop_servo");
 
+        double drivemultiplier = 0.6;
 
         telemetry.addLine("Initialized");
         telemetry.update();
@@ -90,10 +108,15 @@ public class radarTeleop extends LinearOpMode {
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
-            double frontLeftPower = axial + lateral + yaw;
-            double frontRightPower = axial - lateral - yaw;
-            double backLeftPower = axial - lateral + yaw;
-            double backRightPower = axial + lateral - yaw;
+           // double frontLeftPower = axial + lateral + yaw;
+           // double frontRightPower = axial - lateral - yaw;
+            //double backLeftPower = axial - lateral + yaw;
+           // double backRightPower = axial + lateral - yaw;
+            // Set up a variable for each drive wheel to save the power level for telemetry.
+            double frontLeftPower  = drivemultiplier * (axial + lateral + yaw);
+            double frontRightPower = drivemultiplier * (axial - lateral - yaw);
+            double backLeftPower   = drivemultiplier * (axial - lateral + yaw);
+            double backRightPower  = drivemultiplier * (axial + lateral - yaw);
 
             // Normalize the values so no wheel power exceeds 100%
             // This ensures that the robot maintains the desired motion.
@@ -113,6 +136,7 @@ public class radarTeleop extends LinearOpMode {
             backLeft.setPower(backLeftPower);
             backRight.setPower(backRightPower);
 
+
             if (gamepad2.aWasPressed()){
                 curTargetVelocity = lowVelocity;
             }
@@ -122,6 +146,12 @@ public class radarTeleop extends LinearOpMode {
             if (gamepad2.xWasPressed()){
                 curTargetVelocity = highVelocity;
             }
+           if (gamepad2.leftBumperWasPressed()) {
+                curTargetVelocity = curTargetVelocity+50;
+            }
+            if (gamepad2.rightBumperWasPressed()){
+                curTargetVelocity = curTargetVelocity-50;
+           }
 
             if (gamepad2.dpadRightWasPressed()) {
                 flywheel.setVelocity(1500);
@@ -131,10 +161,11 @@ public class radarTeleop extends LinearOpMode {
             }
 
             if (gamepad2.dpadUpWasPressed()) {
-                launchServo.setPosition(0.55);
+                flicking = true;
+                flickTimer.reset();
             }
             if (gamepad2.dpadDownWasPressed()) {
-                launchServo.setPosition(0.75);
+                launcherPos = 0.75;
             }
             if (gamepad2.rightTriggerWasPressed()) {
                 IntakePower = 0;
@@ -148,9 +179,22 @@ public class radarTeleop extends LinearOpMode {
                 IntakePower = -0.5;
                 strintakestatus = "out";
             }
+            // Turbo Mode™
+            if (gamepad1.left_bumper) {
+                drivemultiplier = 1;
+            } else if (gamepad1.right_bumper) {
+                drivemultiplier = 0.15;
+            } else {
+                drivemultiplier = 0.6;
+            }
+            // Run timed programs
+            if (flicking) flickLauncher();
+
             RBT.setPower(IntakePower);
             ramp11.setPower(IntakePower);
             ramp12.setPower(-IntakePower);
+
+            launchServo.setPosition(launcherPos);
 
             flywheel.setVelocity(curTargetVelocity);
 
