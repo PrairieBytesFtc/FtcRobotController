@@ -132,7 +132,7 @@ public class PB_auto_selector2_0 extends LinearOpMode {
         PbRobot.RunAutoMode(runMode);
 
         telemetry.addLine("Auto Mode Finished");
-        telemetry.update();
+        //telemetry.update();
         sleep(1000);  // pause to display final telemetry message.
     }
 

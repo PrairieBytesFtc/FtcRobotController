@@ -316,23 +316,34 @@ public class PB_robot_class1_4 {
                     state = 3;
                     break;
                 case 3:
-                    complete = true;
+                    state = 4;
                     break;
                 case 4: // turn left
-                    setTargetPosition(20,-20,20,-20);
+                    setTargetPosition(-20,20,-20,20);
                     state = 5;
                     break;
                 case 5: //turn left
                     waitForEncoders();
                     break;
-                case 6: //
-
+                case 6: // move forward
+                    setTargetPosition(260,260,260,260);
+                    state = 7;
+                    break;
+                case 7: //move forward
+                    waitForEncoders();
+                    break;
+                case 8:
+                    setTargetPosition(-45,45,45,-45);
+                case 9:
+                    complete = true;
+                    break;
 
             }
 
-           //this.opMode.telemetry.addData("Current State", state);
-           // this.opMode.telemetry.addData("Runtime", runtime.seconds());
-           // this.opMode.telemetry.update();
+           this.opMode.telemetry.addData("Current State", state);
+           this.opMode.telemetry.addData("Runtime", runtime.seconds());
+           this.opMode.telemetry.update();
+
 
         }
 
@@ -979,11 +990,12 @@ public class PB_robot_class1_4 {
                 //else if (wait.seconds() > 3)
                     launchState = 7;
                 break;
-           // case 7:
-               // curTargetVelocity = 0;
-               // intakePower = 0;
-                //launchState = 0;
-               // break;
+            case 7:
+                curTargetVelocity = 0;
+                intakePower = 0;
+                launchState = 0;
+                launching = false;
+                break;
         }
 
         if (flicking) flickLauncher();
@@ -1022,7 +1034,7 @@ public class PB_robot_class1_4 {
         this.opMode.telemetry.addData("Current Velocity", "%.2f", curVelocity);
         this.opMode.telemetry.addData("Error", "%.2f", error);
         // Call telemetry update
-        this.opMode.telemetry.update();
+       // this.opMode.telemetry.update();
 
     }
 
