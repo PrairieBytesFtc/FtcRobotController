@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,7 +18,7 @@ public class PB_dev_auto1_0 extends LinearOpMode {
     private DcMotor backLeft = null;
     private DcMotor backRight = null;
     static final int DISTANCE_IN_TICKS = -1060;
-    static final double COUNTS_PER_MOTOR_REV = 753.2;
+    static final double COUNTS_PER_MOTOR_REV = 537.7;
     static final double WHEEL_DIAMETER_INCHES = 4;
     static final double     COUNTS_PER_INCH         = COUNTS_PER_MOTOR_REV / (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double MOTOR_POWER = 0.5;
