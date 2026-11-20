@@ -81,10 +81,10 @@ public class radarTeleop extends LinearOpMode {
         telemetry.addLine("Initialized");
         telemetry.update();
 
-        waitForStart();
+       // waitForStart();
 
-
-        launchServo.setPosition(0.75);
+        launcherPos = 0.75;
+        //launchServo.setPosition(launcherPos);
 
 
         //RBT
@@ -92,11 +92,11 @@ public class radarTeleop extends LinearOpMode {
         ramp11 = hardwareMap.get(CRServo.class, "ramp11");
         ramp12 = hardwareMap.get(CRServo.class, "ramp12");
         RBT.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        RBT.setPower(IntakePower);
-        ramp11.setPower(IntakePower);
-        ramp12.setPower(-IntakePower);
+        //RBT.setPower(IntakePower);
+        //ramp11.setPower(IntakePower);
+        //ramp12.setPower(-IntakePower);
 
-
+        waitForStart();
 
         while (opModeIsActive()) {
             double max;
