@@ -75,11 +75,11 @@ public class PB_auto_selector2_0 extends LinearOpMode {
             // Check for D-pad input on gamepad1
             if (gamepad1.dpadLeftWasPressed()) {
                     runMode--;
-                    if(runMode < 1) runMode = 7;
+                    if(runMode < 1) runMode = 10;
 
                 } else if (gamepad1.dpadRightWasPressed()) {
                     runMode++;
-                    if(runMode > 7) runMode = 1;
+                    if(runMode > 10) runMode = 1;
             }
 
 
@@ -103,6 +103,15 @@ public class PB_auto_selector2_0 extends LinearOpMode {
                     break;
                 case 6:
                     strModeDesc = "AutoTest1";
+                    break;
+                case 7:
+                    strModeDesc = "autoVer2";
+                    break;
+                case 8:
+                    strModeDesc = "Double Shooting phase with garden collecting phase with park";
+                    break;
+                case 9:
+                    strModeDesc = "autoVer4";
                     break;
 
                 default:

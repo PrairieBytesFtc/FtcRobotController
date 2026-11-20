@@ -50,6 +50,7 @@ public class PB_robot_class1_4 {
     boolean flicking = false;
     boolean launching = false;
     int launchState = 0;
+    int iNumLaunched = 0;
     // Vision processing variables, not used for anything currently
     private AprilTagProcessor aprilTagProcessor;
     private VisionPortal visionPortal;
@@ -196,6 +197,15 @@ public class PB_robot_class1_4 {
             case 6:
                 autoTest1();
                 break;
+            case 7:
+                autoVer2();
+                break;
+            case 8:
+                GardenShooter();
+                break;
+            case 9:
+                autoVer4();
+                break;
 
         }
     }
@@ -332,7 +342,7 @@ public class PB_robot_class1_4 {
                 case 7: //move forward
                     waitForEncoders();
                     break;
-                case 8:
+                case 8: // strafe left
                     setTargetPosition(-45,45,45,-45);
                 case 9:
                     complete = true;
@@ -343,6 +353,318 @@ public class PB_robot_class1_4 {
            this.opMode.telemetry.addData("Current State", state);
            this.opMode.telemetry.addData("Runtime", runtime.seconds());
            this.opMode.telemetry.update();
+
+
+        }
+
+    }
+    public void autoVer2() {
+        beforeMainAuto();
+        while (this.opMode.opModeIsActive() && !complete) {
+            switch (state) {
+                case 0: // Move to firing position, turn on flywheel
+                    curTargetVelocity = lowVelocity;
+                    //flywheel.setVelocity(curTargetVelocity);
+                    //    MOTOR_POWER = 0.4; Not needed? Was to slow down motors so that they didn't overshoot so much
+                    setTargetPosition(20,20,20,20);
+                    state = 1;
+                    break;
+                case 1: // Move to firing position
+                    waitForEncoders();
+                    break;
+                case 2: //turn on flywheel
+                    launchState = 1;
+                    launching = true;
+                    iNumLaunched = 0;
+                    //for (int i = 1; i < 2; i++) {
+
+
+                    //while (launching && this.opMode.opModeIsActive())
+                    while (launching && iNumLaunched < 4 && this.opMode.opModeIsActive())
+                        launchSequence(lowVelocity);
+                    state = 3;
+                    break;
+                case 3:
+                    state = 4;
+                    break;
+                case 4: // turn left
+                    setTargetPosition(-10,10,-10,10);
+                    state = 5;
+                    break;
+                case 5: //turn left
+                    waitForEncoders();
+                    break;
+                case 6: // move back
+                    setTargetPosition(-10,-10,-10,-10);
+                    state = 7;
+                    break;
+                case 7:
+                    waitForEncoders();
+                    break;
+                case 8: // strafe left
+                    setTargetPosition(-20,20,20,-20);
+                    state = 9;
+                    break;
+                case 9:
+                    waitForEncoders();
+                    break;
+                case 10: //move forward (270)
+                    setTargetPosition(80,80,80,80);
+                    state = 11;
+                    break;
+                case 11:
+                    waitForEncoders();
+                    break;
+                case 12: // strafe left
+                    setTargetPosition(-45,45,45,-45);
+                    state = 13;
+                    break;
+                case 13:
+                    waitForEncoders();
+                    break;
+                case 14:
+                    complete = true;
+                    break;
+
+            }
+
+            this.opMode.telemetry.addData("Current State", state);
+            this.opMode.telemetry.addData("Runtime", runtime.seconds());
+            this.opMode.telemetry.update();
+
+
+        }
+
+    }
+
+    public void GardenShooter() {
+        beforeMainAuto();
+        while (this.opMode.opModeIsActive() && !complete) {
+            switch (state) {
+                case 0: // Move to firing position, turn on flywheel
+                    curTargetVelocity = lowVelocity;
+                    //flywheel.setVelocity(curTargetVelocity);
+                    //    MOTOR_POWER = 0.4; Not needed? Was to slow down motors so that they didn't overshoot so much
+                    setTargetPosition(20, 20, 20, 20);
+                    state = 1;
+                    break;
+                case 1: // Move to firing position
+                    waitForEncoders();
+                    iNumLaunched = 0;
+                    break;
+                case 2: //turn on flywheel
+                    launchState = 1;
+                    launching = true;
+//                    for (int i = 1; i < 4; i++) {
+                        launchState = 1;
+                        launching = true;
+                        iNumLaunched = 0;
+                        while (launching && iNumLaunched < 4 && this.opMode.opModeIsActive())
+                            launchSequence(lowVelocity);
+  //                  }
+                    // Flywheel
+                    curTargetVelocity = 0;
+                    flywheel.setVelocity(curTargetVelocity);
+                    state = 3;
+                    break;
+                case 3:
+                    state = 4;
+                    break;
+                case 4: // turn left
+                    setTargetPosition(-10, 10, -10, 10);
+                    waitForEncoders();
+                    state = 5;
+                    break;
+                case 5: // turn 180 degrees
+                    setTargetPosition(-110, 110, -110, 110);
+                    state = 6;
+                    break;
+                case 6: //turn 180
+                    waitForEncoders();
+                    break;
+                case 7: // move strafe right
+                    setTargetPosition(45, -45, -45, 45);
+                    state = 8;
+                    break;
+                case 8:
+                    waitForEncoders();
+                    break;
+                case 9: // turn on intake
+                    intakePower = 1;
+                    RBT.setPower(intakePower);
+                case 10: // mover forward
+                    setTargetPosition(30, 30, 30, 30);
+                    state = 11;
+                    break;
+                case 11:
+                    waitForEncoders();
+                    break;
+                case 12: // move backward
+                    setTargetPosition(-20, -20, -20, -20);
+                    state = 13;
+                    break;
+                case 13:
+                    waitForEncoders();
+                    break;
+                case 14://strafe left
+                    setTargetPosition(-45, 45, 45, -45);
+                    state = 15;
+                    break;
+                case 15:
+                    waitForEncoders();
+                    break;
+                case 16:
+                    setTargetPosition(120, -120, 120, -120);
+                    state = 17;
+                    break;
+                case 17:
+                    waitForEncoders();
+                    break;
+                case 18:
+                    setTargetPosition(-5, 5, -5, 5);
+                    state = 19;
+                    break;
+                case 19:
+                    waitForEncoders();
+                    break;
+                case 20:
+                    launchState = 1;
+                    launching = true;
+                    iNumLaunched = 0;
+                    //for (int i = 1; i < 2; i++) {
+
+
+                        //while (launching && this.opMode.opModeIsActive())
+                        while (launching && iNumLaunched < 4 && this.opMode.opModeIsActive())
+                            launchSequence(lowVelocity);
+                    //}
+                    state = 21;
+                    launching = false;
+                    break;
+                case 21:
+                    setTargetPosition(-10,10,-10,10);
+                    state = 22;
+                    break;
+                case 22:
+                    waitForEncoders();
+                    break;
+                case 23:
+                    setTargetPosition(20,20,20,20);
+                    state = 24;
+                    break;
+                case 24:
+                    waitForEncoders();
+                    break;
+                case 25:
+                    MOTOR_POWER = 0.75;
+                    setTargetPosition(-45,45,45,-45);
+                    state = 26;
+                    break;
+                case 26:
+                    waitForEncoders();
+                    break;
+                case 27:
+                    MOTOR_POWER = 0.75;
+                    setTargetPosition(80,80,80,80);
+                    state = 28;
+                    break;
+                case 28:
+                    complete = true;
+                    break;
+
+            }
+
+           // this.opMode.telemetry.addData("Current State", state);
+           // this.opMode.telemetry.addData("Runtime", runtime.seconds());
+           // this.opMode.telemetry.update();
+
+
+        }
+
+    }
+
+    public void autoVer4() {
+        beforeMainAuto();
+        while (this.opMode.opModeIsActive() && !complete) {
+            switch (state) {
+                case 0: // Move to firing position, turn on flywheel
+                    curTargetVelocity = lowVelocity;
+                    //flywheel.setVelocity(curTargetVelocity);
+                    //    MOTOR_POWER = 0.4; Not needed? Was to slow down motors so that they didn't overshoot so much
+                    setTargetPosition(20,20,20,20);
+                    state = 1;
+                    break;
+                case 1: // Move to firing position
+                    waitForEncoders();
+                    break;
+                case 2: //turn left
+                    setTargetPosition(-20,20,-20,20);
+                    state = 3;
+                    break;
+                case 3:
+                    waitForEncoders();
+                    break;
+                case 4: //turn on flywheel
+                    //launchState = 1;
+                    //launching = true;
+                   // while (launching && this.opMode.opModeIsActive()) launchSequence(lowVelocity);
+                    launchState = 1;
+                    launching = true;
+                    iNumLaunched = 0;
+                    //for (int i = 1; i < 2; i++) {
+
+
+                    //while (launching && this.opMode.opModeIsActive())
+                    while (launching && iNumLaunched < 4 && this.opMode.opModeIsActive())
+                        launchSequence(lowVelocity);
+                    state = 5;
+                    break;
+                case 5: //turn right
+                    setTargetPosition(20,-20,20,-20);
+                    state = 6;
+                    break;
+                case 6:
+                    waitForEncoders();
+                    break;
+                case 7: //move forward
+                    setTargetPosition(20,20,20,20);
+                    state = 8;
+                    break;
+                case 8:
+                    waitForEncoders();
+                    break;
+                case 9: //strafe left
+                    setTargetPosition(-20,20,20,-20);
+                    state = 10;
+                    break;
+                case 10:
+                    waitForEncoders();
+                    break;
+                case 11: //move forward
+                    setTargetPosition(80,80,80,80);
+                    state = 12;
+                    break;
+                case 12:
+                    waitForEncoders();
+                    break;
+                case 13:// strafe left
+                    setTargetPosition(-45,45,45,-45);
+                    state = 14;
+                    break;
+                case 14:
+                    waitForEncoders();
+                    break;
+                case 15:
+                    complete = true;
+                    break;
+
+
+
+            }
+
+            this.opMode.telemetry.addData("Current State", state);
+            this.opMode.telemetry.addData("Runtime", runtime.seconds());
+            this.opMode.telemetry.update();
 
 
         }
@@ -733,8 +1055,8 @@ public class PB_robot_class1_4 {
 
     private void waitForEncoders() {
         while (this.opMode.opModeIsActive() && (frontLeft.isBusy() || frontRight.isBusy() || backRight.isBusy() || backLeft.isBusy())) {
-            this.opMode.telemetry.addData("Current State", state);
-            this.opMode.telemetry.update();
+           // this.opMode.telemetry.addData("Current State", state);
+           // this.opMode.telemetry.update();
         }
         state++;
         resetEncoders();
@@ -993,18 +1315,21 @@ public class PB_robot_class1_4 {
             case 7:
                 curTargetVelocity = 0;
                 intakePower = 0;
-                launchState = 0;
-                launching = false;
+                launchState = 1;
+                //launching = false;
                 break;
         }
 
-        if (flicking) flickLauncher();
+        if (flicking) {
+            flickLauncher();
+
+        }
 
         // Assign calculated values to hardware
         // Intake
         RBT.setPower(intakePower);
-        ramp11.setPower(intakePower);
-        ramp12.setPower(-intakePower);
+        //ramp11.setPower(intakePower);
+        //ramp12.setPower(-intakePower);
         // Flywheel
         flywheel.setVelocity(curTargetVelocity);
         // Launcher servo
@@ -1024,6 +1349,7 @@ public class PB_robot_class1_4 {
         // Telemetry
         // Current state
         this.opMode.telemetry.addData("Current Launch State", launchState);
+        this.opMode.telemetry.addData("Launch Count", iNumLaunched);
         // Elapsed time since program started
         this.opMode.telemetry.addData("Runtime", runtime.seconds());
         // Current drive motor encoder positions
@@ -1034,7 +1360,7 @@ public class PB_robot_class1_4 {
         this.opMode.telemetry.addData("Current Velocity", "%.2f", curVelocity);
         this.opMode.telemetry.addData("Error", "%.2f", error);
         // Call telemetry update
-       // this.opMode.telemetry.update();
+        this.opMode.telemetry.update();
 
     }
 
@@ -1045,6 +1371,7 @@ public class PB_robot_class1_4 {
         if (flickTimer.milliseconds() > 250){
             launcherPos = 0.75;
             flicking = false;
+            iNumLaunched++;
         } else launcherPos = 0.55;
     }
 
